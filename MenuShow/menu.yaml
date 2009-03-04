@@ -1,0 +1,70 @@
+﻿# YAML for Menu Definition
+---
+# Default Settings
+
+colors:  # Color Name Definitions
+    clBlack: '#000000'
+    clWhite: '#FFFFFF'
+    clRed: '#FF0000'
+    clGreen: '#00FF00'
+    clBlue: '#0000FF'
+    clYellow: '#FFFF00'
+    clCyan: '#00FFFF'
+    clMagenta: '#FF00FF'
+    clAzure: '#007FFF'
+
+basemap:
+    dim: [320, 240]  # dimensions of width and height
+    color: clWhite
+    image: food.jpg
+    type: image  # {color, image}
+
+style:  # Style of title, items, focused items
+    font: [cour.ttf, 24]
+    title: {color: clYellow}
+    items: {color: clWhite}
+    focus:
+        color: clRed
+        type: bar  # {bar, color}
+
+---
+title: ''
+items:
+    - Drink
+    - Fruit
+    - Vegetable
+
+---
+title: '==   Drink   =='
+items:
+    - Coffee
+    - Juice
+    - Soda Water
+    - Tea
+
+basemap:
+    image: drink.jpg
+
+---
+title: '==    Fruit    =='
+items:
+    - Apple
+    - Banana
+    - Coco
+    - Grape
+    - Lemon
+    - Pineapple
+
+basemap:
+    image: fruit.jpg
+
+---
+title: '== Vegetable =='
+items:
+    - Cabbage
+    - Carrot
+    - Onion
+    - Spinach
+
+basemap:
+    image: vegetable.jpg
