@@ -105,34 +105,53 @@ _langCode = {
     'UNKNOWN' : ''
 }
 
+#------------------------------------------------------------------------------
+# Decorators
+#------------------------------------------------------------------------------
 
-def language_name(func):
+def _language_name(func):
     def wrapper(text, src, dest):
-        lang_names = _langCode.keys()
-        src, dest = src.upper(), dest.upper()
+        """Supports language name for argument "src" and "dest"."""
+        names = _langCode.keys()
+        codes = _langCode.values()
 
-        if src in lang_names:
-            src = _langCode.get(src, "auto")
-        if dest in lang_names:
-            dest = _langCode.get(dest, "auto")
+        src, dest = src.upper(), dest.upper()
+        if src in names:
+            src = _langCode[src]
+        if dest in names:
+            dest = _langCode[dest]
+
+        src, dest = src.lower(), dest.lower()
+        if src not in codes:
+            src = "auto"
+        if dest not in codes:
+            dest = "auto"
 
         return func(text, src, dest)
 
+    wrapper.__doc__ = func.__doc__
+    wrapper.__name__ = func.__name__
     return wrapper
 
 
-def unicode_text(func):
+def _unicode_text(func):
     def wrapper(text, *args, **kwargs):
+        """Supports unicode for argument "text". and returns a unicode string"""
         if isinstance(text, unicode):
             text = text.encode("utf8")
 
         return func(text, *args, **kwargs).decode("utf8")
 
+    wrapper.__doc__ = func.__doc__
+    wrapper.__name__ = func.__name__
     return wrapper
 
+#------------------------------------------------------------------------------
+# Public APIs
+#------------------------------------------------------------------------------
 
-@unicode_text
-@language_name
+@_unicode_text
+@_language_name
 def translate(text, srcLang="en", destLang="zh-TW"):
     """Returns translated text for the given text supplied, matching the
     destination language.
@@ -182,9 +201,10 @@ def translate(text, srcLang="en", destLang="zh-TW"):
     return value
 
 
+#------------------------------------------------------------------------------
+# Module Testing
+#------------------------------------------------------------------------------
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    print translate("你好世界", "auto", "English")
-    print translate("你好世界".decode("utf8"), "Taiwan", "English")
-    print translate("世界你好", "zh-TW", "en")
