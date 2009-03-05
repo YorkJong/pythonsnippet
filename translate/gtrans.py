@@ -1,6 +1,10 @@
 # -*- encoding: utf-8 -*-
 """
-A python wrapper of the web service of Google Translate
+A python wrapper of Google Translate web service.
+
+This script is re-wrote from Thejaswi Raya's pytranslator for fitting my use.
+For Thejaswi Raya's pytranslator, please see http://developer.spikesource.com \
+/blogs/traya/2009/02/python_google_translator_pytra.html.
 """
 __author__ = "Jiang Yu-Kuan, yukuan.jiang(at)gmail.com"
 __date__ = "2009/03/03 (initial)"
@@ -11,8 +15,8 @@ import re
 import urllib
 
 
-# from http://code.google.com/apis/ajaxlanguage/documentation/reference.html#LangNameArray
-_langCode = {
+# from http://code.google.com/apis/ajaxlanguage/documentation/reference.html
+LANG_CODE = {
     'AFRIKAANS' : 'af',
     'ALBANIAN' : 'sq',
     'AMHARIC' : 'am',
@@ -109,19 +113,18 @@ _langCode = {
 # Decorators
 #------------------------------------------------------------------------------
 
-def _language_name(func):
-    def wrapper(text, src, dest):
-        """Supports language name for argument "src" and "dest"."""
-        names = _langCode.keys()
-        codes = _langCode.values()
+def name_to_code(func):
+    """A decorator that converts arguments of language names
+    into those of language codes."""
+    def wrapper(text, src="English", dest="Taiwan"):
+        names = LANG_CODE.keys()
+        codes = LANG_CODE.values()
 
-        src, dest = src.upper(), dest.upper()
-        if src in names:
-            src = _langCode[src]
-        if dest in names:
-            dest = _langCode[dest]
+        if src.upper() in names:
+            src = LANG_CODE[src.upper()]
+        if dest.upper() in names:
+            dest = LANG_CODE[dest.upper()]
 
-        src, dest = src.lower(), dest.lower()
         if src not in codes:
             src = "auto"
         if dest not in codes:
@@ -134,13 +137,17 @@ def _language_name(func):
     return wrapper
 
 
-def _unicode_text(func):
-    def wrapper(text, *args, **kwargs):
-        """Supports unicode for argument "text". and returns a unicode string"""
-        if isinstance(text, unicode):
-            text = text.encode("utf8")
+def unicodify(func):
+    """A decorator that converts unicode arguments into utf8 ones,
+    and returns a unicode string."""
+    def wrapper(*args):
+        args_new = []
+        for a in args:
+            if isinstance(a, unicode):
+                a = a.encode("utf8")
+            args_new.append(a)
 
-        return func(text, *args, **kwargs).decode("utf8")
+        return func(*args_new).decode("utf8")
 
     wrapper.__doc__ = func.__doc__
     wrapper.__name__ = func.__name__
@@ -150,17 +157,17 @@ def _unicode_text(func):
 # Public APIs
 #------------------------------------------------------------------------------
 
-@_unicode_text
-@_language_name
-def translate(text, srcLang="en", destLang="zh-TW"):
+@name_to_code
+@unicodify
+def translate(text, src="en", dest="zh-TW"):
     """Returns translated text for the given text supplied, matching the
     destination language.
 
     Arguments
     ---------
     text     - The text that is to be translated.
-    srcLang  - The source language as a language code
-    destLang - The destination language as a language code.
+    src  - The source language as a language code
+    dest - The destination language as a language code.
 
     Example
     -------
@@ -170,36 +177,26 @@ def translate(text, srcLang="en", destLang="zh-TW"):
     u'Hello World'
     >>> translate("世界你好", "zh-TW", "en")
     u'Hello World'
-    >>> translate("世界你好", "zh-TW", "fr")
-    u'Bonjour tout le monde'
-    >>> translate("Bonjour tout le monde", "fr", "en")
+    >>> translate("Bonjour Monde", "fr", "en")
     u'Hello World'
     >>> translate("ハローワールド", "ja", "en")
     u'Hello World'
     >>> translate("A bird can fly high.", "en", "fr")
     u'Un oiseau peut voler haut.'
-
-    See Also
-    --------
-    http://developer.spikesource.com/blogs/traya/2009/02/python_google_translator_pytra.html
     """
-    urllib.FancyURLopener.version = "Firefox/3.0.6"
+    URL_BASE = 'http://translate.google.com.tw/translate_t'
 
-    params = urllib.urlencode({
-        "langpair": "%(srcLang)s|%(destLang)s" % locals(),
-        "text": text,
-        "ie":"UTF8", "oe":"UTF8"
-    })
+    params = {'langpair':'', 'text':'', 'ie':'UTF8', 'oe':'UTF8'}
+    params['langpair'] = '%s|%s' % (src, dest)
+    params['text'] = text
 
-    base = "http://translate.google.com.tw/translate_t"
-    page = urllib.urlopen(base, params)
+    urllib.FancyURLopener.version = "%s/%s" % (__file__, __version__)
+    page = urllib.urlopen(URL_BASE, urllib.urlencode(params))
     content = page.read()
     page.close()
 
     match = re.search("<div id=result_box dir=\"ltr\">(.*?)</div>", content)
-    value = match.groups()[0]
-    return value
-
+    return match.groups()[0]
 
 #------------------------------------------------------------------------------
 # Module Testing
@@ -207,4 +204,6 @@ def translate(text, srcLang="en", destLang="zh-TW"):
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    failures, tests = doctest.testmod()
+    if failures == 0:
+        print translate("Pass the test.")

@@ -2,8 +2,8 @@
 """
 A wrapper of the AJAX Language API
 
-ref. http://code.google.com/p/python-googlelanguage/source/browse/trunk/googlelanguage/__init__.py
-ref. http://code.google.com/apis/ajaxlanguage/documentation/reference.html#_intro_fonje
+ref. http://code.google.com/apis/ajaxlanguage
+ref. http://code.google.com/p/python-googlelanguage/
 """
 __author__ = "Jiang Yu-Kuan, yukuan.jiang(at)gmail.com"
 __date__ = "2009/03/03 (initial)"
@@ -14,8 +14,8 @@ import urllib
 import simplejson
 
 
-# from http://code.google.com/apis/ajaxlanguage/documentation/reference.html#LangNameArray
-_langCode = {
+# from http://code.google.com/apis/ajaxlanguage/documentation/reference.html
+LANG_CODE = {
     'AFRIKAANS' : 'af',
     'ALBANIAN' : 'sq',
     'AMHARIC' : 'am',
@@ -112,19 +112,19 @@ _langCode = {
 # Decorators
 #------------------------------------------------------------------------------
 
-def _language_name(func):
-    def wrapper(text, src, dest):
-        """Supports language name for argument "src" and "dest"."""
-        names = _langCode.keys()
-        codes = _langCode.values()
+def name_to_code(func):
+    """A decorator that converts arguments of language names
+    into those of language codes.
+    """
+    def wrapper(text, src="English", dest="Taiwan"):
+        names = LANG_CODE.keys()
+        codes = LANG_CODE.values()
 
-        src, dest = src.upper(), dest.upper()
-        if src in names:
-            src = _langCode[src]
-        if dest in names:
-            dest = _langCode[dest]
+        if src.upper() in names:
+            src = LANG_CODE[src.upper()]
+        if dest.upper() in names:
+            dest = LANG_CODE[dest.upper()]
 
-        src, dest = src.lower(), dest.lower()
         if src not in codes:
             src = detect(text).encode("utf8")
         if dest not in codes:
@@ -137,13 +137,16 @@ def _language_name(func):
     return wrapper
 
 
-def _unicode_text(func):
-    def wrapper(text, *args, **kwargs):
-        """Supports unicode for argument "text"."""
-        if isinstance(text, unicode):
-            text = text.encode("utf8")
+def unicode_to_utf8(func):
+    """A decorator that converts unicode arguments into utf8 ones."""
+    def wrapper(*args):
+        args_new = []
+        for a in args:
+            if isinstance(a, unicode):
+                a = a.encode("utf8")
+            args_new.append(a)
 
-        return func(text, *args, **kwargs)
+        return func(*args_new)
 
     wrapper.__doc__ = func.__doc__
     wrapper.__name__ = func.__name__
@@ -153,54 +156,51 @@ def _unicode_text(func):
 # Public APIs
 #------------------------------------------------------------------------------
 
-@_unicode_text
-@_language_name
-def translate(text, srcLang='en', destLang='zh-TW'):
+@name_to_code
+@unicode_to_utf8
+def translate(text, src="en", dest="zh-TW"):
     """Returns translated text for the given text supplied, matching the
     destination language.
 
     Arguments
     ---------
     text     - The text that is to be translated.
-    srcLang  - The source language
-    destLang - The destination language
+    src  - The source language
+    dest - The destination language
 
     Example
     -------
     >>> translate("世界你好", "zh-TW", "en")
     u'Hello World'
-    >>> translate("世界你好", "zh-TW", "fr")
-    u'Bonjour tout le monde'
-    >>> translate("Bonjour tout le monde", "fr", "en")
+    >>> translate("Bonjour Monde", u"fr", u"en")
     u'Hello World'
     >>> translate("ハローワールド", "Japanese", "en")
     u'Hello World'
-    >>> translate("A bird can fly high.", "en", "fr")
+    >>> translate(u"A bird can fly high.", "en", "fr")
     u'Un oiseau peut voler haut.'
     """
-    TRANSLATE_URL = 'http://ajax.googleapis.com/ajax/services/language/translate?'
-    TRANSLATE_PARAMS = {'v':'1.0', 'q':'', 'langpair':''}
+    URL_BASE = 'http://ajax.googleapis.com/ajax/services/language/translate'
 
-    params = TRANSLATE_PARAMS
+    params = {'v':'1.0', 'q':'', 'langpair':''}
     params['q'] = text
-    params['langpair'] = '|'.join([srcLang, destLang])
+    params['langpair'] = '%s|%s' % (src, dest)
 
-    url = TRANSLATE_URL + urllib.urlencode(params)
+    url = '%s?%s' % (URL_BASE, urllib.urlencode(params))
     fp = urllib.urlopen(url)
-    resp = fp.read()  # get the JSON string
+    json = fp.read()  # get the JSON string
     fp.close()
 
-    resp = simplejson.loads(resp)  # parse the JSON string
+    json = simplejson.loads(json)  # parse the JSON string
 
-    if resp['responseStatus'] == 200:
-        return resp['responseData']['translatedText']
+    if json['responseStatus'] == 200:
+        return json['responseData']['translatedText']
     else:
-        raise Exception('(%(responseStatus)s) %(responseDetails)s' % resp)
+        raise Exception('(%(responseStatus)s) %(responseDetails)s' % json)
 
     return None
 
 
-@_unicode_text
+@unicode_to_utf8
 def detect(text):
     """Return the language code that describes the language of the given text.
 
@@ -217,23 +217,22 @@ def detect(text):
     >>> detect("面皮")
     u'zh-CN'
     """
-    DETECT_URL = 'http://ajax.googleapis.com/ajax/services/language/detect?'
-    DETECT_PARAMS = {'v':'1.0', 'q':''}
+    URL_BASE = 'http://ajax.googleapis.com/ajax/services/language/detect'
 
-    params = DETECT_PARAMS
+    params = {'v':'1.0', 'q':''}
     params['q'] = text
 
-    url = DETECT_URL + urllib.urlencode(params)
+    url = '%s?%s' % (URL_BASE, urllib.urlencode(params))
     fp = urllib.urlopen(url)
-    resp = fp.read()  # get the JSON string
+    json = fp.read()  # get the JSON string
     fp.close()
 
-    resp = simplejson.loads(resp)  # parse the JSON string
+    json = simplejson.loads(json)  # parse the JSON string
 
-    if resp['responseStatus'] == 200:
-        return resp['responseData']['language']
+    if json['responseStatus'] == 200:
+        return json['responseData']['language']
     else:
-        raise Exception('(%(responseStatus)s) %(responseDetails)s' % resp)
+        raise Exception('(%(responseStatus)s) %(responseDetails)s' % json)
 
     return None
 
@@ -243,4 +242,6 @@ def detect(text):
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    failures, tests = doctest.testmod()
+    if failures == 0:
+        print translate("Pass the test.")
