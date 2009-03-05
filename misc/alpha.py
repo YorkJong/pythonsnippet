@@ -22,15 +22,16 @@ def convert(infile, format):
     infile -- the input file name of the PNG image
     format -- the output file format of the RGB part
     """
-    base, ext = os.path.splitext(infile)
+    base = os.path.basename(infile)
+    main, ext = os.path.splitext(base)
 
     im = Image.open(infile)
     alpha = im.split()[3].getdata()
     hex_ = "".join(("%02X\n" % v for v in alpha))
-    file(base+'.alpha.hex', 'wb').write(hex_)
+    file(main+'.alpha.hex', 'wb').write(hex_)
 
-    #im.save(base + '.jpg')  # progressive==progression (True==False==None bug??)
-    im.convert('RGB').save(".".join([base, format]))
+    #im.save(main + '.jpg')  # progressive==progression (True==False==None bug??)
+    im.convert('RGB').save(".".join([main, format]))
 
 #------------------------------------------------------------------------------
 
