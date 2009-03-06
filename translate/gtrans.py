@@ -139,7 +139,7 @@ def lang_codes():
 # Decorators
 #------------------------------------------------------------------------------
 
-def name_to_code(func):
+def decor_name_to_code(func):
     """A decorator that converts arguments of language names
     into those of language codes."""
     def wrapper(text, src="English", dest="Taiwan"):
@@ -163,7 +163,7 @@ def name_to_code(func):
     return wrapper
 
 
-def unicodify(func):
+def decor_unicodify(func):
     """A decorator that converts unicode arguments into utf8 ones,
     and returns a unicode string."""
     def wrapper(*args):
@@ -183,8 +183,8 @@ def unicodify(func):
 # Public APIs
 #------------------------------------------------------------------------------
 
-@name_to_code
-@unicodify
+@decor_name_to_code
+@decor_unicodify
 def translate(text, src="en", dest="zh-TW"):
     """Returns translated text for the given text supplied, matching the
     destination language.
