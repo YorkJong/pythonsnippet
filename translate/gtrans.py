@@ -16,7 +16,7 @@ import urllib
 
 
 # from http://code.google.com/apis/ajaxlanguage/documentation/reference.html
-LANG_CODE = {
+_LANG_CODE = {
     'AFRIKAANS' : 'af',
     'ALBANIAN' : 'sq',
     'AMHARIC' : 'am',
@@ -109,6 +109,32 @@ LANG_CODE = {
     'UNKNOWN' : ''
 }
 
+
+def lang_names():
+    """
+    Returns the name list of supported languages
+
+    Example
+    -------
+    >>> 'Taiwan'.upper() in lang_names()
+    True
+    >>> 'Mars'.upper() in lang_names()
+    False
+    """
+    return _LANG_CODE.keys()
+
+
+def lang_codes():
+    """
+    Returns the code list of supported languages
+
+    Example
+    -------
+    >>> 'zh-TW' in lang_codes()
+    True
+    """
+    return _LANG_CODE.values()
+
 #------------------------------------------------------------------------------
 # Decorators
 #------------------------------------------------------------------------------
@@ -117,13 +143,13 @@ def name_to_code(func):
     """A decorator that converts arguments of language names
     into those of language codes."""
     def wrapper(text, src="English", dest="Taiwan"):
-        names = LANG_CODE.keys()
-        codes = LANG_CODE.values()
+        names = lang_names()
+        codes = lang_codes()
 
         if src.upper() in names:
-            src = LANG_CODE[src.upper()]
+            src = _LANG_CODE[src.upper()]
         if dest.upper() in names:
-            dest = LANG_CODE[dest.upper()]
+            dest = _LANG_CODE[dest.upper()]
 
         if src not in codes:
             src = "auto"
