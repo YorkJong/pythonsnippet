@@ -312,25 +312,29 @@ def YUV420FromYUV444(YUV444, width):
 # Usage Example
 #------------------------------------------------------------------------------
 
-r, g, b = 0, 0, 255
-print JFIF601(r, g, b)
-print PIL(r, g, b)
-print
-print CCIR601FromJFIF601(*JFIF601(r, g, b))
-print CCIR601FromJFIF601(*PIL(r, g, b))
-print YPbPr(r, g, b)
-print CCIR601(r, g, b)
-print Rec601(r, g, b)
-print
-print Clip(*CCIR601FromJFIF601(*JFIF601(r, g, b)))
-print Clip(*CCIR601FromJFIF601(*PIL(r, g, b)))
-print Clip(*YPbPr(r, g, b))
-print Clip(*CCIR601(r, g, b))
-print Clip(*Rec601(r, g, b))
-
 YUV = lambda r,g,b: Clip(*Rec601(r, g, b))
+
+
+def demo():
+    r, g, b = 0, 0, 255
+    print JFIF601(r, g, b)
+    print PIL(r, g, b)
+    print
+    print CCIR601FromJFIF601(*JFIF601(r, g, b))
+    print CCIR601FromJFIF601(*PIL(r, g, b))
+    print YPbPr(r, g, b)
+    print CCIR601(r, g, b)
+    print Rec601(r, g, b)
+    print
+    print Clip(*CCIR601FromJFIF601(*JFIF601(r, g, b)))
+    print Clip(*CCIR601FromJFIF601(*PIL(r, g, b)))
+    print Clip(*YPbPr(r, g, b))
+    print Clip(*CCIR601(r, g, b))
+    print Clip(*Rec601(r, g, b))
 
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    failures, tests = doctest.testmod()
+    if failures == 0:
+        demo()
