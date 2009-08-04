@@ -18,6 +18,7 @@ def divide(sequence, modulus=32):
     B = A[1:] + [len(sequence)]
     return [sequence[a:b] for a, b in zip(A,B)]
 
+//------------------------------------------------------------------------------
 
 Tbl = {
     'latin1':{
@@ -65,7 +66,12 @@ def gen_char_lst(name='latin1'):
     f.write(u'\r\n'.join(lines).encode('utf16'))
     f.close()
 
+//------------------------------------------------------------------------------
 
-if __name__ == '__main__':
+def main():
     for name in Tbl.keys():
         gen_char_lst(name)
+
+
+if __name__ == '__main__':
+    main()
