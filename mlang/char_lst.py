@@ -53,7 +53,9 @@ Tbl = {
 }
 
 
-def gen_char_lst(name='latin1'):
+def char_printable_lst(name='latin1'):
+    """Generates a printable char lsit and save to a file.
+    """
     lines = Tbl[name]['head']
     for a, b in Tbl[name]['range']:
         lines.extend(['', ':0x%02X' % a])
