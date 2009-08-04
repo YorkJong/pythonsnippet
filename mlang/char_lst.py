@@ -4,7 +4,7 @@ This tool generates char list with varied encodes
 """
 __software__ = "Char Listing Tool"
 __version__ = "1.0"
-__author__ = "Jiang Yu-Kuan, yukuan_jiang(at)gmail.com"
+__author__ = "Jiang Yu-Kuan, yukuan.jiang(at)gmail.com"
 __date__ = "2009/08/04 (initial version)"
 
 
@@ -60,7 +60,8 @@ def gen_char_lst(name='latin1'):
         u = b.decode(Tbl[name]['code'])
         lines.extend(divide(u))
 
-    f = open('char_'+name+'.lst', 'wb')
+    fn = ''.join(['char_', name, '.lst'])
+    f = open(fn, 'wb')
     f.write(u'\r\n'.join(lines).encode('utf16'))
     f.close()
 
