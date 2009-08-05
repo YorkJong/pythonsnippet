@@ -1,4 +1,4 @@
-﻿# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 """
 This tool generates char list with varied encodes
 """
@@ -18,7 +18,7 @@ def divide(sequence, modulus=32):
     B = A[1:] + [len(sequence)]
     return [sequence[a:b] for a, b in zip(A,B)]
 
-//------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 Tbl = {
     'latin1':{
@@ -53,26 +53,27 @@ Tbl = {
 }
 
 
-def char_printable_lst(name='latin1'):
-    """Generates a printable char lsit and save to a file.
+def printable_chars(char_set='latin1'):
+    """Generates a printable char list with assigned char_set 
+    and save it to a file.
     """
-    lines = Tbl[name]['head']
-    for a, b in Tbl[name]['range']:
+    lines = Tbl[char_set]['head']
+    for a, b in Tbl[char_set]['range']:
         lines.extend(['', ':0x%02X' % a])
         b = ''.join([chr(x) for x in range(a,b)])
-        u = b.decode(Tbl[name]['code'])
+        u = b.decode(Tbl[char_set]['code'])
         lines.extend(divide(u))
 
-    fn = ''.join(['char_', name, '.lst'])
+    fn = ''.join(['char_', char_set, '.lst'])
     f = open(fn, 'wb')
     f.write(u'\r\n'.join(lines).encode('utf16'))
     f.close()
 
-//------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 def main():
-    for name in Tbl.keys():
-        gen_char_lst(name)
+    for char_set in Tbl.keys():
+        printable_chars(char_set)
 
 
 if __name__ == '__main__':
