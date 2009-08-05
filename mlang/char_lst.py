@@ -53,8 +53,8 @@ Tbl = {
 }
 
 
-def printable_chars(char_set='latin1'):
-    """Generates a printable char list with assigned char_set 
+def save_printable_chars(char_set='latin1'):
+    """Generates a printable char list with assigned char_set
     and save it to a file.
     """
     lines = Tbl[char_set]['head']
@@ -73,7 +73,7 @@ def printable_chars(char_set='latin1'):
 
 def main():
     for char_set in Tbl.keys():
-        printable_chars(char_set)
+        save_printable_chars(char_set)
 
 
 if __name__ == '__main__':
