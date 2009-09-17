@@ -17,7 +17,7 @@ from PIL import Image, ImageFont, ImageDraw
 #-------------------------------------------------------------------------------
 
 def RGB565_from_RGB888(rgb888, threshold):
-    """Returns the RGB565 string from an RGB888 string
+    """Return the RGB565 string from an RGB888 string
 
     arguments:
     rgb888 -- the input string
@@ -39,7 +39,7 @@ def RGB565_from_RGB888(rgb888, threshold):
 
 
 def BW1_from_BW8(bw8, threshold):
-    """Gets a BW1 string from a BW8 string.
+    """Get a BW1 string from a BW8 string.
     here BW1 means black-and-white 1-bit, 8 pixels per byte.
          BW8 means black-and-white 8-bit, 1 pixel per byte.
 

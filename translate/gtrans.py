@@ -112,7 +112,7 @@ _LANG_CODE = {
 
 def lang_names():
     """
-    Returns the name list of supported languages
+    Return the name list of supported languages
 
     Example
     -------
@@ -126,7 +126,7 @@ def lang_names():
 
 def lang_codes():
     """
-    Returns the code list of supported languages
+    Return the code list of supported languages
 
     Example
     -------
@@ -186,7 +186,7 @@ def decor_unicodify(func):
 @decor_name_to_code
 @decor_unicodify
 def translate(text, src="en", dest="zh-TW"):
-    """Returns translated text for the given text supplied, matching the
+    """Return translated text for the given text supplied, matching the
     destination language.
 
     Arguments

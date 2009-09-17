@@ -17,7 +17,7 @@ from PIL import Image, ImageDraw, ImageColor, ImageFont
 #-------------------------------------------------------------------------------
 
 def RGB565(im):
-    """Returns the RGB565 string from an Image object
+    """Return the RGB565 string from an Image object
 
     Example
     -------
@@ -48,7 +48,7 @@ def RGB565s_from_utf(text, font, color="#FFFFFF", bgcolor="#000000"):
 #-------------------------------------------------------------------------------
 
 def mono(im):
-    """Gets an 1-bit bitmap string from an Image object
+    """Get an 1-bit bitmap string from an Image object
 
     Example
     -------

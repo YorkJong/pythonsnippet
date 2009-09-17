@@ -1,8 +1,8 @@
-def numPages(n):
+def num_pages(n):
     """Return two array of page number for a booklet printing
     Inputs:
         n - total pages
-        
+
     Example:
     >>> numPages(11)
     (array([12,  1, 10,  3,  8,  5]), array([ 2, 11,  4,  9,  6,  7]))

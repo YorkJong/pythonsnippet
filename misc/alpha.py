@@ -16,7 +16,7 @@ from PIL import Image
 
 
 def convert(infile, format):
-    """Splits a PNG file into RGB part and alpha part.
+    """Split a PNG file into RGB part and alpha part.
 
     arguments:
     infile -- the input file name of the PNG image
