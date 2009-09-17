@@ -111,7 +111,7 @@ _LANG_CODE = {
 
 def lang_names():
     """
-    Returns the name list of supported languages.
+    Return the name list of supported languages.
 
     Example
     -------
@@ -125,7 +125,7 @@ def lang_names():
 
 def lang_codes():
     """
-    Returns the code list of supported languages.
+    Return the code list of supported languages.
 
     Example
     -------

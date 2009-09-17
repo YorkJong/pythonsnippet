@@ -4,7 +4,7 @@
 #------------------------------------------------------------------------------
 
 def YPbPr(r, g, b, Kb=0.114, Kr=0.299):
-    """Returns YPbPr (analog version of Y'CbCr) from R'G'B'.
+    """Return YPbPr (analog version of Y'CbCr) from R'G'B'.
 
     Y' =  Kr * R'        + (1 - Kr - Kb) * G' + Kb * B'
     Pb = 0.5 * (B' - Y') / (1 - Kb)
@@ -27,7 +27,7 @@ def YPbPr(r, g, b, Kb=0.114, Kr=0.299):
 #------------------------------------------------------------------------------
 
 def CCIR601(r, g, b):
-    """Returns CCIR-YCbCr (601) from RGB.
+    """Return CCIR-YCbCr (601) from RGB.
 
     CCIR 601 defines the relationship between YCbCr and RGB values:
         Ey = 0.299R + 0.587G + 0.114B
@@ -46,7 +46,7 @@ def CCIR601(r, g, b):
 
 
 def Rec601(r, g, b):
-    """Returns Rec-YCbCr (601-1) from RGB.
+    """Return Rec-YCbCr (601-1) from RGB.
 
     CCIR Rec. 601-1 spec used by TIFF & JPEG (from David):
         Y  =  0.2989R + 0.5866G + 0.1145B         R = Y + 0.0000Cb + 1.4022Cr
@@ -66,7 +66,7 @@ def Rec601(r, g, b):
 #------------------------------------------------------------------------------
 
 def JFIF601(r, g, b):
-    """Returns JFIF-Y'CbCr (601) from "digital 8-bit R'G'B'"
+    """Return JFIF-Y'CbCr (601) from "digital 8-bit R'G'B'"
 
     Y' =       + 0.299    * R'd + 0.587    * G'd + 0.114    * B'd
     Cb = 128   - 0.168736 * R'd - 0.331264 * G'd + 0.5      * B'd
@@ -85,7 +85,7 @@ def JFIF601(r, g, b):
 
 
 def PIL(r, g, b):
-    """Returns PIL's JFIF-YCbCr (601) from 8-bit RGB.
+    """Return PIL's JFIF-YCbCr (601) from 8-bit RGB.
 
     R, G, G in [0..255]
     Y, Cb, Cr in [0..255]
@@ -112,7 +112,7 @@ def CCIR601FromJFIF601(y, cb, cr):
 #------------------------------------------------------------------------------
 
 def YUV444FromYUV422(YUV422):
-    """Returns the YUV444 string from a given YUV422 string
+    """Return the YUV444 string from a given YUV422 string
 
     An input byte stream with the order:
         Y0 U0 Y1 V1 Y2 U2 Y3 V3
@@ -136,7 +136,7 @@ def YUV444FromYUV422(YUV422):
 
 
 def YUV422FromYUV444(YUV444):
-    """Returns the YUV422 string from a given YUV444 string
+    """Return the YUV422 string from a given YUV444 string
 
     An input byte stream with the order:
         [Y0 U0 V0] [Y1 U1 V1] [Y2 U2 V2] [Y3 U3 V3]
@@ -162,7 +162,7 @@ def YUV422FromYUV444(YUV444):
 #------------------------------------------------------------------------------
 
 def YUV444FromYUV411(YUV411):
-    """Returns the YUV444 string from a given YUV411 string
+    """Return the YUV444 string from a given YUV411 string
 
     An input byte stream with the order:
         Y0 U0 Y1 Y2 V2 Y3
@@ -186,7 +186,7 @@ def YUV444FromYUV411(YUV411):
 
 
 def YUV411FromYUV444(YUV444):
-    """Returns the YUV411 string from a given YUV444 string
+    """Return the YUV411 string from a given YUV444 string
 
     An input byte stream with the order:
         [Y0 U0 V0] [Y1 U1 V1] [Y2 U2 V2] [Y3 U3 V3]
@@ -215,7 +215,7 @@ def YUV411FromYUV444(YUV444):
 #------------------------------------------------------------------------------
 
 def YUV444FromYUV420(YUV420, width):
-    """Returns the YUV444 string from a given YUV420 string
+    """Return the YUV444 string from a given YUV420 string
 
     An input byte stream with the order:
         Yo0 Uo0 Yo1 Yo2 Uo2 Yo3
@@ -260,7 +260,7 @@ def YUV444FromYUV420(YUV420, width):
 
 
 def YUV420FromYUV444(YUV444, width):
-    """Returns the YUV420 string from a given YUV444 string
+    """Return the YUV420 string from a given YUV444 string
 
     An input byte stream with the order:
         [Yo0 Uo0 Vo0] [Yo1 Uo1 Vo1] [Yo2 Uo2 Vo2] [Yo3 Uo3 Vo3]

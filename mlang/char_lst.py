@@ -54,7 +54,7 @@ Tbl = {
 
 
 def save_printable_chars(char_set='latin1'):
-    """Generates a printable char list with assigned char_set
+    """Generate a printable char list with assigned char_set
     and save it to a file.
     """
     lines = Tbl[char_set]['head']
