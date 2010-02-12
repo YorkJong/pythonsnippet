@@ -123,13 +123,14 @@ def military_from_AMPM(h, ampm):
 
     Arguments
     ---------
-    h: an AM/PM houre
+    h: an AM/PM hour
     ampm: 0 means AM; 1 means PM
 
     Example
     -------
     >>> hours = [AMPM_from_military(h) for h in range(24)]
-    >>> ampms = [0,]*12 + [1,]*12
+    >>> AM, PM = 0, 1
+    >>> ampms = [AM,]*12 + [PM,]*12
     >>> [military_from_AMPM(h, a) for h, a in zip(hours, ampms)] == range(24)
     True
     """
