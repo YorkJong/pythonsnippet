@@ -99,6 +99,42 @@ def firstWeekdayOfMonth(year, month):
     return weekday(year, month, 1)
 
 
+def AMPM_from_military(h):
+    """Return an AM/PM hour from its 24-hour (military time) version.
+    ref. http://www.onlineconversion.com/date_12-24_hour.htm
+
+    Example
+    -------
+    >>> [AMPM_from_military(h) for h in range(24)]
+    [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    """
+    h %= 12
+    if (h == 0):
+        h = 12
+    return h
+
+
+def military_from_AMPM(h, ampm):
+    """Return a military hour (0-23) from its 12-hour AM/PM version.
+    ref. http://www.onlineconversion.com/date_12-24_hour.htm
+
+    Arguments
+    ---------
+    h: an AM/PM houre
+    ampm: 0 means AM; 1 means PM
+
+    Example
+    -------
+    >>> H = [AMPM_from_military(h) for h in range(24)]
+    >>> ampms = [0,]*12 + [1,]*12
+    >>> [military_from_AMPM(h, ampm) for h, ampm in zip(H, ampms)] == range(24)
+    True
+    """
+    if (h == 12):
+        h = 0
+    return h + ampm*12
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
