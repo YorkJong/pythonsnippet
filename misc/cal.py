@@ -105,8 +105,11 @@ def AMPM_from_military(h):
 
     Example
     -------
-    >>> [AMPM_from_military(h) for h in range(24)]
-    [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    >>> militaries = [12,] + range(1, 12)
+    >>> militaries
+    [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    >>> [AMPM_from_military(h) for h in range(24)] == militaries*2
+    True
     """
     h %= 12
     if (h == 0):
@@ -125,9 +128,9 @@ def military_from_AMPM(h, ampm):
 
     Example
     -------
-    >>> H = [AMPM_from_military(h) for h in range(24)]
+    >>> hours = [AMPM_from_military(h) for h in range(24)]
     >>> ampms = [0,]*12 + [1,]*12
-    >>> [military_from_AMPM(h, ampm) for h, ampm in zip(H, ampms)] == range(24)
+    >>> [military_from_AMPM(h, a) for h, a in zip(hours, ampms)] == range(24)
     True
     """
     if (h == 12):
