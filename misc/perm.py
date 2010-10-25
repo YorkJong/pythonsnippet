@@ -1,12 +1,18 @@
 # -*- encoding: utf-8 -*-
 """
-Permutation Operations
+Operations of permutations in group theory
 
 """
 __author__ = "Jiang Yu-Kuan, yukuan.jiang(at)gmail.com"
 __date__ = "2006/10/25"
 __revision__ = "1.1"
 
+from functools import partial
+
+
+#------------------------------------------------------------------------------
+# Common Operations of Permutations
+#------------------------------------------------------------------------------
 
 def cycle_notation_from_one_line_notation(line):
     """Return a cycle notation of a permutation from the corresponding one-line
@@ -20,6 +26,11 @@ def cycle_notation_from_one_line_notation(line):
     Reference
     ---------
     http://en.wikipedia.org/wiki/Permutation
+
+    Example
+    -------
+    >>> cycle_notation_from_one_line_notation([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    [[0], [1, 5, 7, 8, 4, 2], [3, 6], [9]]
     """
     n = len(line)
     pred = line
@@ -40,19 +51,71 @@ def cycle_notation_from_one_line_notation(line):
 
 #------------------------------------------------------------------------------
 
-def follow_cycles(seq, succ, pred):
-    """Permute a sequence in place with follow-the-cycles algorithm.
+def permute(seq, line):
+    """Return a permuted sequence with a permutation in one-line notation
 
-    The follow-the-cycles algorithm::
+    Arguments
+    ---------
+    seq
+        the sequence to be permuted
+    line
+        a permutation in one-line notation
 
-        for each length>1 cycle C of the permutation
-            pick a starting address s in C
-            let D = data at s
-            let x = predecessor of s in the cycle
-            while x ¡Ú s
-                move data from x to successor of x
-                let x = predecessor of x
-            move data D to successor of s
+    Example
+    -------
+    >>> seq = range(10)
+    >>> permute(seq, [0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
+    """
+    return [line[seq[x]] for x in range(len(seq))]
+
+
+def permute_with_follow_cycles(seq, cycles):
+    """Permute a sequence in place with a follow-the-cycles algorithm.
+
+    Arguments
+    ---------
+    seq
+        the sequence to be permuted
+    cycles
+        a permutation in cycle notation
+
+    Reference
+    ---------
+    http://en.wikipedia.org/wiki/In-place_matrix_transposition
+
+    Example
+    -------
+    >>> seq = range(10)
+    >>> cycles = cycle_notation_from_one_line_notation([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    >>> cycles
+    [[0], [1, 5, 7, 8, 4, 2], [3, 6], [9]]
+    >>> permute_with_follow_cycles(seq, cycles)
+    >>> seq
+    [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
+    """
+    def succ(cycle, x):
+        n = len(cycle)
+        dic = dict(zip(cycle, range(n)))
+        return cycle[(dic[x] + 1) % n]
+
+    def pred(cycle, x):
+        n = len(cycle)
+        dic = dict(zip(cycle, range(n)))
+        return cycle[(dic[x] + n - 1) % n]
+
+    for cycle in [c for c in cycles if len(c)>1]:
+        s = cycle[0]
+        d = seq[s]
+        x = pred(cycle, s)
+        while x != s:
+            seq[succ(cycle, x)] = seq[x]
+            x = pred(cycle, x)
+        seq[succ(cycle, s)] = d
+
+
+def permute_with_modified_follow_cycles(seq, succ, pred):
+    """Permute a sequence in place with a modified follow-the-cycles algorithm.
 
     Arguments
     ---------
@@ -63,10 +126,15 @@ def follow_cycles(seq, succ, pred):
     pred
         a predecessor function
 
-    Reference
-    ---------
-    http://en.wikipedia.org/wiki/Permutation
-
+    Example
+    -------
+    >>> seq = range(10)
+    >>> n = len(seq)
+    >>> succ = partial(succ_of_perm_even_odd, n=n)
+    >>> pred = partial(pred_of_perm_even_odd, n=n)
+    >>> permute_with_modified_follow_cycles(seq, succ, pred)
+    >>> print seq
+    [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
     """
     unmoved_set = set(range(len(seq)))
 
@@ -80,27 +148,19 @@ def follow_cycles(seq, succ, pred):
             x = pred(x)
         seq[succ(s)] = d
 
-    return seq
-
 #------------------------------------------------------------------------------
-
-def number_of_elements(n):
-    """A decorator to fill n as second argument of a function.
-    """
-    def fill_n(f):
-        def new_f(x):
-            res = f(x, n)
-            return res
-        new_f.func_name = f.func_name
-        return new_f
-    return fill_n
-
+# Apply Permutations to Even-odd bipartitions
+#------------------------------------------------------------------------------
 
 def succ_of_perm_even_odd(x, n):
     """Return successor of x in the cycle of a even-odd permutation.
 
-    source: [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
-    target: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    Example
+    -------
+    >>> seq = range(10)
+    >>> succ = partial(succ_of_perm_even_odd, n=len(seq))
+    >>> print [succ(x) for x in seq]
+    [0, 5, 1, 6, 2, 7, 3, 8, 4, 9]
     """
     if x%2 == 0:
         return x/2
@@ -110,35 +170,20 @@ def succ_of_perm_even_odd(x, n):
 def pred_of_perm_even_odd(x, n):
     """Return predecessor of x in the cycle of a even-odd permutation.
 
-    source: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    target: [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
+    Example
+    -------
+    >>> seq = range(10)
+    >>> pred = partial(pred_of_perm_even_odd, n=len(seq))
+    >>> print [pred(x) for x in seq]
+    [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
     """
     if x < n/2:
         return 2 * x
     return 2 * (x - n/2) + 1
 
 #------------------------------------------------------------------------------
-
-def test():
-    p = range(10)
-    n = len(p)
-    succ = number_of_elements(n)(succ_of_perm_even_odd)
-    pred = number_of_elements(n)(pred_of_perm_even_odd)
-
-    ss = [pred(x) for x in p]
-    print ss
-    ps = [succ(x) for x in ss]
-    print ps
-
-    print
-    print cycle_notation_from_one_line_notation([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
-
-    print follow_cycles(p, succ, pred)
-    print p
-
-
-if __name__ == "__main__":
-	test()
+# Apply Permutations to Picture Rotations
+#------------------------------------------------------------------------------
 
 """
 img[y][x]           # assuming this is the original orientation
@@ -155,3 +200,31 @@ ii = (h - x)*w + y
 img[h - y][w - x]   # 180 degrees
 ii = (h - y)*w + (w - x) = (h - y + 1) * w - x
 """
+
+#------------------------------------------------------------------------------
+# Demonstration
+#------------------------------------------------------------------------------
+
+def demo():
+    seq = range(10)
+    print permute(seq, [0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+
+    seq = range(10)
+    cycles = cycle_notation_from_one_line_notation([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    permute_with_follow_cycles(seq, cycles)
+    print seq
+
+    seq = range(10)
+    n = len(seq)
+    succ = partial(succ_of_perm_even_odd, n=n)
+    pred = partial(pred_of_perm_even_odd, n=n)
+    permute_with_modified_follow_cycles(seq, succ, pred)
+    print seq
+
+
+if __name__ == "__main__":
+    import doctest
+    failures, tests = doctest.testmod()
+    if failures == 0:
+        demo()
+
