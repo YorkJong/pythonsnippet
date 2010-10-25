@@ -2,10 +2,17 @@
 """
 Operations of permutations in group theory
 
+In group theory, the term permutation of a set means a bijective map, or
+bijection, from that set onto itself.
+
+References
+----------
+http://en.wikipedia.org/wiki/Permutation
+http://en.wikipedia.org/wiki/Permutation_group
 """
 __author__ = "Jiang Yu-Kuan, yukuan.jiang(at)gmail.com"
 __date__ = "2006/10/25"
-__revision__ = "1.1"
+__revision__ = "1.2"
 
 from functools import partial
 
@@ -14,14 +21,19 @@ from functools import partial
 # Common Operations of Permutations
 #------------------------------------------------------------------------------
 
-def cycle_notation_from_one_line_notation(line):
+def cycles_from_one_line(line):
     """Return a cycle notation of a permutation from the corresponding one-line
     notation.
 
     Arguments
     ---------
     line
-        a sequence to represent the one-line notation
+        a sequence to denote a permutation in one-line notation.
+
+    Note
+    ----
+    In group theory, there are three main notations for permutations of a finite
+    set S: 1) two-line notation; 2) one-line notation; and 3) cycle notation.
 
     Reference
     ---------
@@ -29,7 +41,8 @@ def cycle_notation_from_one_line_notation(line):
 
     Example
     -------
-    >>> cycle_notation_from_one_line_notation([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    >>> one_line = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]   # even-odd bipartition
+    >>> cycles_from_one_line(one_line)
     [[0], [1, 5, 7, 8, 4, 2], [3, 6], [9]]
     """
     n = len(line)
@@ -52,7 +65,7 @@ def cycle_notation_from_one_line_notation(line):
 #------------------------------------------------------------------------------
 
 def permute(seq, line):
-    """Return a permuted sequence with a permutation in one-line notation
+    """Permute a sequence with a permutation in one-line notation.
 
     Arguments
     ---------
@@ -64,14 +77,17 @@ def permute(seq, line):
     Example
     -------
     >>> seq = range(10)
-    >>> permute(seq, [0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    >>> one_line = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]   # even-odd bipartition
+    >>> permute(seq, one_line)
     [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
     """
     return [line[seq[x]] for x in range(len(seq))]
 
 
 def permute_with_follow_cycles(seq, cycles):
-    """Permute a sequence in place with a follow-the-cycles algorithm.
+    """Permute a sequence in place with a permutation in cycle notation.
+
+    A follow-the-cycles algorithm is applied to this function.
 
     Arguments
     ---------
@@ -87,7 +103,8 @@ def permute_with_follow_cycles(seq, cycles):
     Example
     -------
     >>> seq = range(10)
-    >>> cycles = cycle_notation_from_one_line_notation([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    >>> one_line = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]   # even-odd bipartition
+    >>> cycles = cycles_from_one_line(one_line)
     >>> cycles
     [[0], [1, 5, 7, 8, 4, 2], [3, 6], [9]]
     >>> permute_with_follow_cycles(seq, cycles)
@@ -115,23 +132,26 @@ def permute_with_follow_cycles(seq, cycles):
 
 
 def permute_with_modified_follow_cycles(seq, succ, pred):
-    """Permute a sequence in place with a modified follow-the-cycles algorithm.
+    """Permute a sequence in place with successor and predecessor operations of
+    a permutation.
+
+    A modified follow-the-cycles algorithm is applied to this function.
 
     Arguments
     ---------
     seq
         the sequence to be permuted
     succ
-        a successor function
+        the successor function of a permutation
     pred
-        a predecessor function
+        the predecessor function of a permutation
 
     Example
     -------
     >>> seq = range(10)
     >>> n = len(seq)
-    >>> succ = partial(succ_of_perm_even_odd, n=n)
-    >>> pred = partial(pred_of_perm_even_odd, n=n)
+    >>> succ = partial(succ_of_even_odd, n=n)
+    >>> pred = partial(pred_of_even_odd, n=n)
     >>> permute_with_modified_follow_cycles(seq, succ, pred)
     >>> print seq
     [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
@@ -152,13 +172,13 @@ def permute_with_modified_follow_cycles(seq, succ, pred):
 # Apply Permutations to Even-odd bipartitions
 #------------------------------------------------------------------------------
 
-def succ_of_perm_even_odd(x, n):
+def succ_of_even_odd(x, n):
     """Return successor of x in the cycle of a even-odd permutation.
 
     Example
     -------
     >>> seq = range(10)
-    >>> succ = partial(succ_of_perm_even_odd, n=len(seq))
+    >>> succ = partial(succ_of_even_odd, n=len(seq))
     >>> print [succ(x) for x in seq]
     [0, 5, 1, 6, 2, 7, 3, 8, 4, 9]
     """
@@ -167,13 +187,13 @@ def succ_of_perm_even_odd(x, n):
     return n/2 + x/2
 
 
-def pred_of_perm_even_odd(x, n):
+def pred_of_even_odd(x, n):
     """Return predecessor of x in the cycle of a even-odd permutation.
 
     Example
     -------
     >>> seq = range(10)
-    >>> pred = partial(pred_of_perm_even_odd, n=len(seq))
+    >>> pred = partial(pred_of_even_odd, n=len(seq))
     >>> print [pred(x) for x in seq]
     [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
     """
@@ -210,14 +230,14 @@ def demo():
     print permute(seq, [0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
 
     seq = range(10)
-    cycles = cycle_notation_from_one_line_notation([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
+    cycles = cycles_from_one_line([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
     permute_with_follow_cycles(seq, cycles)
     print seq
 
     seq = range(10)
     n = len(seq)
-    succ = partial(succ_of_perm_even_odd, n=n)
-    pred = partial(pred_of_perm_even_odd, n=n)
+    succ = partial(succ_of_even_odd, n=n)
+    pred = partial(pred_of_even_odd, n=n)
     permute_with_modified_follow_cycles(seq, succ, pred)
     print seq
 
