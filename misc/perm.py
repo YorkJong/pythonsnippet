@@ -309,12 +309,34 @@ def pred_of_rotate180(i, w, h):
 
 def demo():
     w, h = 4, 3
-    seq = range(w*h)
     succ = partial(succ_of_rotate90cw, w=w, h=h)
     pred = partial(pred_of_rotate90cw, w=w, h=h)
-    print seq
-    print [succ(i) for i in seq]
-    print [pred(i) for i in seq]
+
+    seq = range(w*h)
+    one_line = [pred(i) for i in seq]   # a permutation in one-line notation
+    print 'one_line:', one_line
+    cycles = cycles_from_one_line(one_line)
+    print 'cycles:', cycles
+    order = 3
+    print 'order:', order
+
+    print '\nTest permute():'
+    seq = range(w*h)
+    for i in range(order):
+        seq = permute(seq, one_line)
+        print seq
+
+    print '\nTest permute_with_follow_cycles():'
+    seq = range(w*h)
+    for i in range(order):
+        permute_with_follow_cycles(seq, cycles)
+        print seq
+
+    print '\nTest permute_with_modified_follow_cycles():'
+    seq = range(w*h)
+    for i in range(order):
+        permute_with_modified_follow_cycles(seq, succ, pred)
+        print seq
 
 
 if __name__ == "__main__":
