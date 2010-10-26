@@ -208,6 +208,14 @@ def pred_of_even_odd(x, n):
 def succ_of_rotate90cw(i, w, h):
     """Return successor of i in the cycle of a permutation of rotation 90
     degree clockwise.
+
+    Example
+    -------
+    >>> w, h = 4, 3
+    >>> seq = range(w*h)
+    >>> succ = partial(succ_of_rotate90cw, w=w, h=h)
+    >>> [succ(i) for i in seq]
+    [2, 5, 8, 11, 1, 4, 7, 10, 0, 3, 6, 9]
     """
     # w:h to h:w (rotate90cw)
     x = i%w
@@ -218,6 +226,14 @@ def succ_of_rotate90cw(i, w, h):
 def pred_of_rotate90cw(i, w, h):
     """Return predecessor of i in the cycle of a permutation of rotation 90
     degree clockwise.
+
+    Example
+    -------
+    >>> w, h = 4, 3
+    >>> seq = range(w*h)
+    >>> pred = partial(pred_of_rotate90cw, w=w, h=h)
+    >>> [pred(i) for i in seq]
+    [8, 4, 0, 9, 5, 1, 10, 6, 2, 11, 7, 3]
     """
     # h:w to w:h (rotate90ccw)
     x = i%h
@@ -229,14 +245,37 @@ def pred_of_rotate90cw(i, w, h):
 def succ_of_rotate90ccw(i, w, h):
     """Return successor of i in the cycle of a permutation of rotation 90
     degree counterclockwise.
+
+    Example
+    -------
+    >>> w, h = 4, 3
+    >>> seq = range(w*h)
+    >>> succ = partial(succ_of_rotate90ccw, w=w, h=h)
+    >>> [succ(i) for i in seq]
+    [9, 6, 3, 0, 10, 7, 4, 1, 11, 8, 5, 2]
     """
-    pass
+    # w:h to h:w (rotate90ccw)
+    x = i%w
+    y = i/w
+    return (w-1 - x)*h + y  # img[(w - 1) - x][y]
+
 
 def pred_of_rotate90ccw(i, w, h):
     """Return predecessor of i in the cycle of a permutation of rotation 90
     degree counterclockwise.
+
+    Example
+    -------
+    >>> w, h = 4, 3
+    >>> seq = range(w*h)
+    >>> pred = partial(pred_of_rotate90ccw, w=w, h=h)
+    >>> [pred(i) for i in seq]
+    [3, 7, 11, 2, 6, 10, 1, 5, 9, 0, 4, 8]
     """
-    pass
+    # h:w to w:h (rotate90cw)
+    x = i%h
+    y = i/h
+    return x*w + (w-1)-y    # img[x][(w - 1) -  y]
 
 #------------------------------------------------------------------------------
 
