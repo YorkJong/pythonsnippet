@@ -205,41 +205,66 @@ def pred_of_even_odd(x, n):
 # Apply Permutations to Picture Rotations
 #------------------------------------------------------------------------------
 
-"""
-img[y][x]           # assuming this is the original orientation
-i = y*w + x
-x = i%w
-y = i/w
+def succ_of_rotate90cw(i, w, h):
+    """Return successor of i in the cycle of a permutation of rotation 90
+    degree clockwise.
+    """
+    # w:h to h:w (rotate90cw)
+    x = i%w
+    y = i/w
+    return x*h + (h-1)-y    # img[x][(h - 1) -  y]
 
-img[x][w - y]       # rotated 90 degrees ccw
-ii = x*w + (w-y) = (x + 1)*w - y
 
-img[h - x][y]       # 90 degrees cw
-ii = (h - x)*w + y
+def pred_of_rotate90cw(i, w, h):
+    """Return predecessor of i in the cycle of a permutation of rotation 90
+    degree clockwise.
+    """
+    # h:w to w:h (rotate90ccw)
+    x = i%h
+    y = i/h
+    return (h-1 - x)*w + y  # img[(h - 1) - x][y]
 
-img[h - y][w - x]   # 180 degrees
-ii = (h - y)*w + (w - x) = (h - y + 1) * w - x
-"""
+#------------------------------------------------------------------------------
+
+def succ_of_rotate90ccw(i, w, h):
+    """Return successor of i in the cycle of a permutation of rotation 90
+    degree counterclockwise.
+    """
+    pass
+
+def pred_of_rotate90ccw(i, w, h):
+    """Return predecessor of i in the cycle of a permutation of rotation 90
+    degree counterclockwise.
+    """
+    pass
+
+#------------------------------------------------------------------------------
+
+def succ_of_rotate180(i, w, h):
+    """Return successor of i in the cycle of a permutation of rotation 180
+    degree.
+    """
+    pass
+
+
+def pred_of_rotate180(i, w, h):
+    """Return predecessor of i in the cycle of a permutation of rotation 180
+    degree.
+    """
+    pass
 
 #------------------------------------------------------------------------------
 # Demonstration
 #------------------------------------------------------------------------------
 
 def demo():
-    seq = range(10)
-    print permute(seq, [0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
-
-    seq = range(10)
-    cycles = cycles_from_one_line([0, 2, 4, 6, 8, 1, 3, 5, 7, 9])
-    permute_with_follow_cycles(seq, cycles)
+    w, h = 4, 3
+    seq = range(w*h)
+    succ = partial(succ_of_rotate90cw, w=w, h=h)
+    pred = partial(pred_of_rotate90cw, w=w, h=h)
     print seq
-
-    seq = range(10)
-    n = len(seq)
-    succ = partial(succ_of_even_odd, n=n)
-    pred = partial(pred_of_even_odd, n=n)
-    permute_with_modified_follow_cycles(seq, succ, pred)
-    print seq
+    print [succ(i) for i in seq]
+    print [pred(i) for i in seq]
 
 
 if __name__ == "__main__":
