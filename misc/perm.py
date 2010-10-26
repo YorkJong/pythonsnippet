@@ -283,14 +283,25 @@ def succ_of_rotate180(i, w, h):
     """Return successor of i in the cycle of a permutation of rotation 180
     degree.
     """
-    pass
+    return pred_of_rotate180(i, w, h)
 
 
 def pred_of_rotate180(i, w, h):
     """Return predecessor of i in the cycle of a permutation of rotation 180
     degree.
+
+    Example
+    -------
+    >>> w, h = 4, 3
+    >>> seq = range(w*h)
+    >>> pred = partial(pred_of_rotate180, w=w, h=h)
+    >>> [pred(i) for i in seq]
+    [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
     """
-    pass
+    # w:h to w:h (rotate180)
+    x = i%w
+    y = i/w
+    return (h-1-y)*w + (w-1)-x  # img[(h - 1) - y][(w - 1) - x]
 
 #------------------------------------------------------------------------------
 # Demonstration
