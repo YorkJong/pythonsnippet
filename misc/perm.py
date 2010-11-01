@@ -18,6 +18,21 @@ from functools import partial
 
 
 #------------------------------------------------------------------------------
+# Help functions
+#------------------------------------------------------------------------------
+
+def gcd(a, b):
+    """Return greatest common divisor using Euclid's Algorithm."""
+    while b:
+        a, b = b, a % b
+    return a
+
+    
+def lcm(*args):
+    """Return least common multiple of args."""
+    return reduce(lambda a, b: a * b / gcd(a, b), args)
+
+#------------------------------------------------------------------------------
 # Common Operations of Permutations
 #------------------------------------------------------------------------------
 
@@ -62,6 +77,24 @@ def cycles_from_one_line(line):
         cycles.append(cycle)
     return cycles
 
+    
+def order_from_cycles(cycles):
+    """Return the order of a cyclic permutation group.
+    
+    Arguments
+    ---------
+    cycles
+        the cycle notation of a permutation
+        
+    Example
+    -------
+    >>> one_line = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]   # even-odd bipartition
+    >>> cycles = cycles_from_one_line(one_line)
+    >>> order_from_cycles(cycles)
+    6
+    """
+    return lcm(*[len(c) for c in cycles])
+    
 #------------------------------------------------------------------------------
 
 def permute(seq, line):
@@ -317,7 +350,7 @@ def demo():
     print 'one_line:', one_line
     cycles = cycles_from_one_line(one_line)
     print 'cycles:', cycles
-    order = 3
+    order = order_from_cycles(cycles)
     print 'order:', order
 
     print '\nTest permute():'
