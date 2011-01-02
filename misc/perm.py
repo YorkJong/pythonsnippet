@@ -403,6 +403,20 @@ def succ_of_rotate180(i, w, h):
 # Demonstration
 #------------------------------------------------------------------------------
 
+def demo_rotate_cycles(w, h, pred_of_rotate=pred_of_rotate90cw):
+    pred = partial(pred_of_rotate, w=w, h=h)
+
+    seq = range(w*h)
+    one_line = [pred(i) for i in seq]   # a permutation in one-line notation
+    print '>>> one_line'
+    print one_line
+    cycles = cycles_from_one_line(one_line)
+    print '>>> n of cycles'
+    print len(cycles)
+    print '>>> cycles'
+    print cycles
+
+
 def demo():
     w, h = 4, 3
     pred = partial(pred_of_rotate90cw, w=w, h=h)
@@ -433,6 +447,12 @@ def demo():
     for i in range(order):
         permute_with_pred_and_succ(seq, pred, succ)
         print seq
+
+    print '\ndemo_rotate_cycles with 3x4 blocks, 90CW:'
+    demo_rotate_cycles(3, 4, pred_of_rotate90cw)
+
+    print '\ndemo_rotate_cycles with 16x9 blocks, 90CW:'
+    demo_rotate_cycles(16, 9, pred_of_rotate90cw)
 
 
 if __name__ == "__main__":
