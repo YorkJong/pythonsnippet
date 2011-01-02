@@ -298,6 +298,41 @@ def succ_of_even_odd(x, n):
     return n/2 + x/2
 
 #------------------------------------------------------------------------------
+# C code generator
+#------------------------------------------------------------------------------
+
+def generate_move_table(cycles):
+    """Generate the move table of a permutation in cycle notation
+
+    A follow-the-cycles algorithm is applied to this function.
+
+    Arguments
+    ---------
+    cycles
+        a permutation in cycle notation
+
+    Reference
+    ---------
+    http://en.wikipedia.org/wiki/In-place_matrix_transposition
+    """
+    n = sum(len(c) for c in cycles)
+    lines = ['// %s' % cycles]
+    lines += ['{']
+    for cycle in [c for c in cycles if len(c)>1]:
+        s = cycle[0]
+        #d = seq[s]
+        lines += ['    {%2u, %2u},' % (s, n)]
+        x = pred_in_cycle(cycle, s)
+        while x != s:
+            #seq[succ_in_cycle(cycle, x)] = seq[x]
+            lines += ['    {%2u, %2u},' % (x, succ_in_cycle(cycle, x))]
+            x = pred_in_cycle(cycle, x)
+        #seq[succ_in_cycle(cycle, s)] = d
+        lines += ['    {%2u, %2u},' % (n, succ_in_cycle(cycle, s))]
+    lines += ['};']
+    return lines
+
+#------------------------------------------------------------------------------
 # Apply Permutations to Picture Rotations
 #------------------------------------------------------------------------------
 
@@ -416,6 +451,31 @@ def demo_rotate_cycles(w, h, pred_of_rotate=pred_of_rotate90cw):
     print '>>> cycles'
     print cycles
 
+#------------------------------------------------------------------------------
+
+def print_rotate_move_table(w, h, pred_of_rotate):
+    pred = partial(pred_of_rotate, w=w, h=h)
+    seq = range(w*h)
+    one_line = [pred(i) for i in seq]   # a permutation in one-line notation
+    cycles = cycles_from_one_line(one_line)
+    lines = generate_move_table(cycles)
+    print '\n'.join(lines)
+
+def print_rotate_move_tables():
+    print
+    print '// 4x3 blocks; 90CW:'
+    print_rotate_move_table(4, 3, pred_of_rotate90cw)
+    print
+    print '// 4x3 blocks; 90CCW:'
+    print_rotate_move_table(4, 3, pred_of_rotate90ccw)
+    print
+    print '// 3x4 blocks; 90CW:'
+    print_rotate_move_table(3, 4, pred_of_rotate90cw)
+    print
+    print '// 3x4 blocks; 90CCW:'
+    print_rotate_move_table(3, 4, pred_of_rotate90ccw)
+
+#------------------------------------------------------------------------------
 
 def demo():
     w, h = 4, 3
@@ -460,5 +520,6 @@ if __name__ == "__main__":
     failures, tests = doctest.testmod()
     if failures == 0:
         demo()
+        print_rotate_move_tables()
 
 
