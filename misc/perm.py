@@ -122,6 +122,54 @@ def order_from_cycles(cycles):
     """
     return lcm(*[len(c) for c in cycles])
 
+
+def pred_in_cycle(cycle, x):
+    """Return the predecessor of x in a cycle.
+
+    Arguments
+    ---------
+    cycle
+        the cycle represented by a sequence
+    x
+        the current element in the cycle
+
+    Example
+    -------
+    >>> cycle = range(10)
+    >>> pred_in_cycle(cycle, 1)
+    0
+    >>> pred_in_cycle(cycle, 0)
+    9
+    """
+    n = len(cycle)
+    dic = dict(zip(cycle, range(n)))
+    return cycle[(dic[x] + n - 1) % n]
+
+
+def succ_in_cycle(cycle, x):
+    """Return the successor of x in a cycle.
+
+    Arguments
+    ---------
+    cycle
+        the cycle represented by a sequence
+    x
+        the current element in the cycle
+
+    Example
+    -------
+    >>> cycle = range(10)
+    >>> succ_in_cycle(cycle, 0)
+    1
+    >>> succ_in_cycle(cycle, 9)
+    0
+    """
+    n = len(cycle)
+    dic = dict(zip(cycle, range(n)))
+    return cycle[(dic[x] + 1) % n]
+
+#------------------------------------------------------------------------------
+# Permute a sequence with different methods
 #------------------------------------------------------------------------------
 
 def permute_with_one_line(seq, line):
@@ -169,24 +217,14 @@ def permute_with_cycles(seq, cycles):
     >>> seq
     [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
     """
-    def pred(cycle, x):
-        n = len(cycle)
-        dic = dict(zip(cycle, range(n)))
-        return cycle[(dic[x] + n - 1) % n]
-
-    def succ(cycle, x):
-        n = len(cycle)
-        dic = dict(zip(cycle, range(n)))
-        return cycle[(dic[x] + 1) % n]
-
     for cycle in [c for c in cycles if len(c)>1]:
         s = cycle[0]
         d = seq[s]
-        x = pred(cycle, s)
+        x = pred_in_cycle(cycle, s)
         while x != s:
-            seq[succ(cycle, x)] = seq[x]
-            x = pred(cycle, x)
-        seq[succ(cycle, s)] = d
+            seq[succ_in_cycle(cycle, x)] = seq[x]
+            x = pred_in_cycle(cycle, x)
+        seq[succ_in_cycle(cycle, s)] = d
 
 
 def permute_with_pred_and_succ(seq, pred, succ):
@@ -317,7 +355,7 @@ def pred_of_rotate90ccw(i, w, h):
     y = i/h
     return x*w + (w-1)-y    # img[x][(w - 1) -  y]
 
-    
+
 def succ_of_rotate90ccw(i, w, h):
     """Return successor of i in the cycle of a permutation of rotation 90
     degree counterclockwise.
@@ -402,4 +440,5 @@ if __name__ == "__main__":
     failures, tests = doctest.testmod()
     if failures == 0:
         demo()
+
 
