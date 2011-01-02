@@ -316,7 +316,8 @@ def generate_move_table(cycles):
     http://en.wikipedia.org/wiki/In-place_matrix_transposition
     """
     n = sum(len(c) for c in cycles)
-    lines = ['// %s' % cycles]
+    lines = ['// %u means the temporary block' % n]
+    lines += ['// %s' % cycles]
     lines += ['{']
     for cycle in [c for c in cycles if len(c)>1]:
         s = cycle[0]
@@ -463,16 +464,16 @@ def print_rotate_move_table(w, h, pred_of_rotate):
 
 def print_rotate_move_tables():
     print
-    print '// 4x3 blocks; 90CW:'
+    print '// 4x3 blocks (0..11); 90CW:'
     print_rotate_move_table(4, 3, pred_of_rotate90cw)
     print
-    print '// 4x3 blocks; 90CCW:'
+    print '// 4x3 blocks (0..11); 90CCW:'
     print_rotate_move_table(4, 3, pred_of_rotate90ccw)
     print
-    print '// 3x4 blocks; 90CW:'
+    print '// 3x4 blocks (0..11); 90CW:'
     print_rotate_move_table(3, 4, pred_of_rotate90cw)
     print
-    print '// 3x4 blocks; 90CCW:'
+    print '// 3x4 blocks (0..11); 90CCW:'
     print_rotate_move_table(3, 4, pred_of_rotate90ccw)
 
 #------------------------------------------------------------------------------
