@@ -317,7 +317,7 @@ def generate_move_table(cycles):
     """
     n = sum(len(c) for c in cycles)
     lines = ['// %u means the temporary block' % n]
-    lines += ['// %s' % cycles]
+    lines += ['// cycles: %s' % cycles]
     lines += ['{']
     for cycle in [c for c in cycles if len(c)>1]:
         s = cycle[0]
@@ -464,16 +464,16 @@ def print_rotate_move_table(w, h, pred_of_rotate):
 
 def print_rotate_move_tables():
     print
-    print '// 4x3 blocks (0..11); 90CW:'
+    print '// 90CW with 4x3+1 blocks (0..11,12):'
     print_rotate_move_table(4, 3, pred_of_rotate90cw)
     print
-    print '// 4x3 blocks (0..11); 90CCW:'
+    print '// 90CCW with 4x3+1 blocks (0..11,12):'
     print_rotate_move_table(4, 3, pred_of_rotate90ccw)
     print
-    print '// 3x4 blocks (0..11); 90CW:'
+    print '// 90CW with 3x4+1 blocks (0..11,12):'
     print_rotate_move_table(3, 4, pred_of_rotate90cw)
     print
-    print '// 3x4 blocks (0..11); 90CCW:'
+    print '// 90CCW with 3x4+1 blocks (0..11,12):'
     print_rotate_move_table(3, 4, pred_of_rotate90ccw)
 
 #------------------------------------------------------------------------------
