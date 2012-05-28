@@ -3,12 +3,12 @@
 A python wrapper of Google Translate web service.
 
 This script is re-wrote from Thejaswi Raya's pytranslator for fitting my use.
-For Thejaswi Raya's pytranslator, please see http://developer.spikesource.com \
-/blogs/traya/2009/02/python_google_translator_pytra.html.
+For Thejaswi Raya's pytranslator, please see http://thejaswihr.blogspot.com \
+/2009/02/python-google-translator-pytranslator.html.
 """
 __author__ = "Jiang Yu-Kuan, yukuan.jiang(at)gmail.com"
-__date__ = "2009/03/03 (initial)"
-__version__ = "1.0"
+__date__ = "2009/03/03 (initial version); 2012/05/28(last revision)"
+__version__ = "1.5"
 
 import sys
 import re
@@ -210,18 +210,23 @@ def translate(text, src="en", dest="zh-TW"):
     >>> translate("A bird can fly high.", "en", "fr")
     u'Un oiseau peut voler haut.'
     """
-    URL_BASE = 'http://translate.google.com.tw/translate_t'
-
-    params = {'langpair':'', 'text':'', 'ie':'UTF8', 'oe':'UTF8'}
-    params['langpair'] = '%s|%s' % (src, dest)
-    params['text'] = text
-
+    URL_BASE = 'http://translate.google.com/translate_t'
     urllib.FancyURLopener.version = "%s/%s" % (__file__, __version__)
-    page = urllib.urlopen(URL_BASE, urllib.urlencode(params))
+
+    params = {
+        'langpair':'%s|%s' % (src, dest),
+        'text':text,
+        'ie':'UTF8',
+        'oe':'UTF8'
+    }
+    data = urllib.urlencode(params)
+
+    page = urllib.urlopen(URL_BASE, data) # POST
     content = page.read()
     page.close()
 
-    match = re.search("<div id=result_box dir=\"ltr\">(.*?)</div>", content)
+    pattern = re.compile('<span[^<>]*result_box[^<>]*><span[^<>]*>(.*?)</span>')
+    match = pattern.search(content)
     return match.groups()[0]
 
 #------------------------------------------------------------------------------
