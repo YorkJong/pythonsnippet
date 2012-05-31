@@ -7,8 +7,8 @@ For Thejaswi Raya's pytranslator, please see http://thejaswihr.blogspot.com \
 /2009/02/python-google-translator-pytranslator.html.
 """
 __author__ = "Jiang Yu-Kuan, yukuan.jiang(at)gmail.com"
-__date__ = "2009/03/03 (initial version); 2012/05/28(last revision)"
-__version__ = "1.5"
+__date__ = "2009/03/03 (initial); 2012/05/31(last revision)"
+__version__ = "1.5.1"
 
 import sys
 import re
@@ -225,7 +225,7 @@ def translate(text, src="en", dest="zh-TW"):
     content = page.read()
     page.close()
 
-    pattern = re.compile('<span[^<>]*result_box[^<>]*><span[^<>]*>(.*?)</span>')
+    pattern = re.compile('<span.*?result_box.*?><span.*?>(.*?)</span>')
     match = pattern.search(content)
     return match.groups()[0]
 
