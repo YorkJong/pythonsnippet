@@ -134,6 +134,7 @@ def lang_codes():
     """
     return _LANG_CODE.values()
 
+
 #------------------------------------------------------------------------------
 # Decorators
 #------------------------------------------------------------------------------
@@ -177,6 +178,7 @@ def decor_unicode_to_utf8(func):
     wrapper.__doc__ = func.__doc__
     wrapper.__name__ = func.__name__
     return wrapper
+
 
 #------------------------------------------------------------------------------
 # Public APIs
@@ -261,6 +263,7 @@ def detect(text):
         raise Exception('(%(responseStatus)s) %(responseDetails)s' % json)
 
     return None
+
 
 #------------------------------------------------------------------------------
 # Module Testing

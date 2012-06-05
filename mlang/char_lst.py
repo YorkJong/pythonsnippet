@@ -69,12 +69,12 @@ def save_printable_chars(char_set='latin1'):
     f.write(u'\r\n'.join(lines).encode('utf16'))
     f.close()
 
+
 #------------------------------------------------------------------------------
 
 def main():
     for char_set in Tbl.keys():
         save_printable_chars(char_set)
-
 
 if __name__ == '__main__':
     main()
