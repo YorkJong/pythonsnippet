@@ -134,6 +134,7 @@ def lang_codes():
     """
     return _LANG_CODE.values()
 
+
 #------------------------------------------------------------------------------
 # Decorators
 #------------------------------------------------------------------------------
@@ -177,6 +178,7 @@ def decor_unicodify(func):
     wrapper.__doc__ = func.__doc__
     wrapper.__name__ = func.__name__
     return wrapper
+
 
 #------------------------------------------------------------------------------
 # Public APIs
@@ -227,6 +229,7 @@ def translate(text, src="en", dest="zh-TW"):
     pattern = re.compile('<span.*?result_box.*?><span.*?>(.*?)</span>')
     match = pattern.search(content)
     return match.groups()[0]
+
 
 #------------------------------------------------------------------------------
 # Module Testing
